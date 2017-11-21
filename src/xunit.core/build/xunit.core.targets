@@ -1,11 +1,10 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <!-- Desktop CLR needs auto-generated binding redirects (and full PDBs for TPv1) -->
   <PropertyGroup Condition=" '$(TargetFrameworkIdentifier)' == '.NETFramework' ">
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <DebugType Condition=" '$(DebugType)' == '' ">full</DebugType>
-    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
   </PropertyGroup>
 
   <!-- .NET Core need .deps.json and .runtimeconfig.json files (and portable PDBs for TPv2) -->
@@ -26,6 +25,17 @@
       <Visible>False</Visible>
     </None>
   </ItemGroup>
+
+  <!-- This must be set in a target, per https://github.com/Microsoft/msbuild/issues/1310#issuecomment-309596435 -->
+  <Target Name="ForceGenerationOfBindingRedirects"
+          AfterTargets="ResolveAssemblyReferences"
+          BeforeTargets="GenerateBindingRedirects"
+          Condition="'$(AutoGenerateBindingRedirects)' == 'true'">
+    <PropertyGroup>
+      <!-- Needs to be set in a target because it has to be set after the initial evaluation in the common targets -->
+      <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+    </PropertyGroup>
+  </Target>
 
   <!-- Support for importing targets via the runner -->
   <Import Condition=" '$(_Xunit_ImportTargetsFile)' != '' " Project="$(_Xunit_ImportTargetsFile)" />

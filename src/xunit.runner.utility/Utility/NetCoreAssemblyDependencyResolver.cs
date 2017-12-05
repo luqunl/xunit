@@ -34,7 +34,7 @@ namespace Xunit
         {
             this.internalDiagnosticsMessageSink = internalDiagnosticsMessageSink;
 
-            var assembly = LoadFromAssemblyPath(assemblyFileName);
+            var assembly = Default.LoadFromAssemblyPath(assemblyFileName);
             var assemblyFolder = Path.GetDirectoryName(assemblyFileName);
             var dependencyContext = DependencyContext.Load(assembly);
 
@@ -62,7 +62,7 @@ namespace Xunit
         }
 
         Assembly OnResolving(AssemblyLoadContext context, AssemblyName name)
-            => assemblyCache.LoadManagedDll(name.Name, path => LoadFromAssemblyPath(path));
+            => assemblyCache.LoadManagedDll(name.Name, path => Default.LoadFromAssemblyPath(path));
     }
 }
 
